@@ -1,0 +1,57 @@
+#include <ESP8266WiFi.h>;
+#include <WiFiClient.h>;
+#include <ThingSpeak.h>;
+const char* ssid = "abo"; //Your Network SSID
+const char* password = "11229911"; //Your Network Password
+int val;
+int ALCOHOL_SENSOR = A0; 
+WiFiClient client;
+unsigned long myChannelNumber = 1905353; //Your Channel Number (Without Brackets)
+const char * myWriteAPIKey = "YUAEENV9Y793GBYZ"; //Your Write API Key
+static const uint8_t D7   = 13;
+#define greenLed D7
+static const uint8_t D0   = 16;
+#define buzzer D0
+static const uint8_t D5   = 14;
+#define redLed D5
+static const uint8_t D6   = 12;
+#define yellowLed D6
+void setup()
+{
+  pinMode(greenLed, OUTPUT);
+  pinMode(yellowLed, OUTPUT);
+  pinMode(redLed, OUTPUT);
+  pinMode(buzzer, OUTPUT);
+Serial.begin(9600);
+delay(10);
+// Connect to WiFi network
+WiFi.begin( "abo" , "11229911");
+ThingSpeak.begin(client);
+}
+void loop()
+{
+val = analogRead(ALCOHOL_SENSOR); //Read Analog values and Store in val variable
+if (val<101){
+    digitalWrite(greenLed, HIGH);
+    digitalWrite(yellowLed, LOW);
+    digitalWrite(redLed, LOW);
+    noTone(buzzer); 
+}
+else if (val>100 && val<301 ){
+    digitalWrite(greenLed, LOW);
+    digitalWrite(yellowLed, HIGH);
+    digitalWrite(redLed, LOW);
+    noTone(buzzer); 
+}
+else if (val>300){
+    digitalWrite(greenLed, LOW);
+    digitalWrite(yellowLed, LOW);
+    digitalWrite(redLed, HIGH);
+    tone(buzzer, 1000, 200); 
+}
+Serial.println(val); //Print on Serial Monitor
+delay(1000);
+ThingSpeak.writeField(myChannelNumber, 1,val, myWriteAPIKey); //Update in ThingSpeak
+delay(100);
+
+}
