@@ -1,8 +1,8 @@
 #include <ESP8266WiFi.h>;
 #include <WiFiClient.h>;
 #include <ThingSpeak.h>;
-const char* ssid = "abo"; //Your Network SSID
-const char* password = "11229911"; //Your Network Password
+const char* ssid = ""; //Your Network SSID
+const char* password = ""; //Your Network Password
 int val;
 int ALCOHOL_SENSOR = A0; 
 WiFiClient client;
